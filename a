@@ -1,0 +1,67 @@
+CREATE TABLE directory (
+  idGlobal SERIAL PRIMARY KEY,
+  idLocal INTEGER,
+  workerUsername VARCHAR REFERENCES company(workerUsername),
+  workerInput TEXT,
+  inputDate TIMESTAMP,
+  invoiceLocation VARCHAR,
+  consignee VARCHAR,
+  total VARCHAR,
+  invoiceNumber VARCHAR,
+  paymentType VARCHAR,
+  bank VARCHAR,
+  paymentDestination VARCHAR,
+  companyBillStatus INTEGER,
+  billDate TIMESTAMP,
+  billNumber INTEGER,
+  observations VARCHAR
+);
+
+CREATE TABLE company (
+  companyName VARCHAR,
+  workerId SERIAL PRIMARY KEY,
+  role VARCHAR,
+  workerSuperior INTEGER REFERENCES userData(workerUsername),
+  workerUsername VARCHAR,
+  workerStatus INTEGER,
+  workerWorkstationIp INET
+);
+
+CREATE TABLE userData (
+  workerId SERIAL PRIMARY KEY,
+  workerUsername VARCHAR,
+  workerPassword VARCHAR
+);
+
+-- Adding foreign key constraints
+ALTER TABLE directory
+ADD CONSTRAINT fk_directory_company
+FOREIGN KEY (workerUsername)
+REFERENCES company(workerUsername);
+
+ALTER TABLE company
+ADD CONSTRAINT fk_company_userData
+FOREIGN KEY (workerSuperior)
+REFERENCES userData(workerUsername);
+
+-- This assumes that FK_workerUsername in userData refers to the same entity as in company
+ALTER TABLE userData
+ADD CONSTRAINT fk_userData_company
+FOREIGN KEY (workerUsername)
+REFERENCES company(workerUsername);
+
+-- Adding indexes
+CREATE INDEX idx_directory_workerUsername
+ON directory(workerUsername);
+
+CREATE INDEX idx_company_workerUsername
+ON company(workerUsername);
+
+CREATE INDEX idx_userData_workerUsername
+ON userData(workerUsername);
+
+CREATE INDEX idx_directory_consignee
+ON directory(consignee);
+
+CREATE INDEX idx_directory_invoiceLocation
+ON directory(invoiceLocation);
