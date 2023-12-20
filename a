@@ -3,7 +3,7 @@ CREATE TABLE directory (
   idLocal INTEGER,
   workerUsername VARCHAR REFERENCES company(workerUsername),
   workerInput TEXT,
-  inputDate TIMESTAMP,
+  inputDate DATE,
   invoiceLocation VARCHAR,
   consignee VARCHAR,
   total VARCHAR,
@@ -33,7 +33,7 @@ CREATE TABLE userData (
   workerPassword VARCHAR
 );
 
--- Adding foreign key constraints
+-- foreign keys
 ALTER TABLE directory
 ADD CONSTRAINT fk_directory_company
 FOREIGN KEY (workerUsername)
@@ -44,13 +44,13 @@ ADD CONSTRAINT fk_company_userData
 FOREIGN KEY (workerSuperior)
 REFERENCES userData(workerUsername);
 
--- This assumes that FK_workerUsername in userData refers to the same entity as in company
+-- FK_workerUsername in userData refers to the same entity as in company
 ALTER TABLE userData
 ADD CONSTRAINT fk_userData_company
 FOREIGN KEY (workerUsername)
 REFERENCES company(workerUsername);
 
--- Adding indexes
+-- indexes
 CREATE INDEX idx_directory_workerUsername
 ON directory(workerUsername);
 
